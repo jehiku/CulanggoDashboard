@@ -230,7 +230,7 @@ def main():
             template='plotly_dark',
             margin=dict(l=10, r=10, t=80, b=10),
             showlegend=False
-        )
+        ),
         st.plotly_chart(fig_top_products, use_container_width=True)
     
     with col2:
