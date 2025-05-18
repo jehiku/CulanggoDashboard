@@ -1,6 +1,3 @@
-# dashboard.py
-# by: Culanggo, Kein Jake A.
-
 import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine, text
@@ -9,31 +6,22 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 import re
-import os
 
-# 1. Render PostgreSQL connection (using environment variable for security)
-RENDER_DB_URL = os.getenv('RENDER_DB_URL', "postgresql://whiplash_user:6EoohkmGo5ziA3qJMhsBYHl5P6yS9UKL@dpg-d0amg66uk2gs73busq9g-a.oregon-postgres.render.com/whiplash")
+# 1. COPY YOUR EXACT RENDER CONNECTION FROM ETL CODE
+RENDER_DB_URL = "postgresql://whiplash_user:6EoohkmGo5ziA3qJMhsBYHl5P6yS9UKL@dpg-d0amg66uk2gs73busq9g-a.oregon-postgres.render.com/whiplash"
 
-# 2. FUNCTION TO FETCH YOUR CLEANED DATA (with error handling)
+# 2. FUNCTION TO FETCH YOUR CLEANED DATA (from data_ETL table)
 @st.cache_data(ttl=300)  # Cache for 5 minutes
 def get_cleaned_data():
-    try:
-        engine = create_engine(RENDER_DB_URL)
-        with engine.connect() as conn:
-            query = text('SELECT * FROM "data_ETL"')
-            df = pd.read_sql(query, conn)
-            
-            # Datetime conversions
-            df['Order Date'] = pd.to_datetime(df['Order Date'], format='%m/%d/%y %H:%M', errors='coerce') 
-            df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-            
-            # Drop rows with invalid dates
-            df = df.dropna(subset=['Date', 'Order Date'])
-            
-        return df
-    except Exception as e:
-        st.error(f"Error loading data: {str(e)}")
-        return pd.DataFrame()  # Return empty dataframe on error
+    engine = create_engine(RENDER_DB_URL)
+    with engine.connect() as conn:
+        query = text('SELECT * FROM "data_ETL"')  # Your exact table name
+        df = pd.read_sql(query, conn)
+        
+        # Ensure your datetime conversions match your ETL
+        df['Order Date'] = pd.to_datetime(df['Order Date'], format='%m/%d/%y %H:%M') 
+        df['Date'] = pd.to_datetime(df['Date'])
+    return df
 
 # Helper function to standardize source values
 def clean_source(source):
