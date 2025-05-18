@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: sales-dashboard
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run dashboard.py --server.port=$PORT --server.address=0.0.0.0
+    envVars:
+      - key: RENDER_DB_URL
+        value: postgresql://whiplash_user:6EoohkmGo5ziA3qJMhsBYHl5P6yS9UKL@dpg-d0amg66uk2gs73busq9g-a.oregon-postgres.render.com/whiplash
