@@ -241,7 +241,7 @@ def main():
             texttemplate='%{label}<br>%{percent} (%{value:$,.0f})',
             pull=[0.05, 0],
             textfont=dict(color='white', size=14),
-            marker=dict(line=dict(color='#121212', width=2))
+            marker=dict(line=dict(color='#121212', width=2)),
         fig_pie.update_layout(
             legend_title="Country",
             margin=dict(l=10, r=10, t=40, b=10),
